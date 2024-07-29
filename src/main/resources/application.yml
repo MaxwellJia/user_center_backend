@@ -1,0 +1,17 @@
+# configure database
+spring:
+  application:
+    name: user-center
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/user
+server:
+  port: 8080
+
+
+# mybatis-plus turn off camel case to call database correctly
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
