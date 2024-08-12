@@ -1,9 +1,7 @@
 package com.wangtao.usercenter.model.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
@@ -62,6 +60,11 @@ public class User implements Serializable {
     private Integer userStatus;
 
     /**
+     * 0 is normal user, 1 is administrator
+     */
+    private Integer userRole;
+
+    /**
      * The time that created the table
      */
     private Date createTime;
@@ -74,6 +77,7 @@ public class User implements Serializable {
     /**
      * Whether the table was deleted
      */
+    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)

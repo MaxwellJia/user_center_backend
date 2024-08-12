@@ -1,0 +1,16 @@
+// Simulate user to log in
+POST http://localhost:8080/user/login
+Content-Type: application/json
+
+{
+  "userAccount": "Maxwell",
+  "userPassword": 12345678
+}
+
+###
+
+// Simulate user to search (Administrator is Maxwell and search object is wangtao)
+GET http://localhost:8080/user/search?username=wangtao
+
+###
+
