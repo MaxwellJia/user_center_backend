@@ -23,6 +23,6 @@ WebStorm (front end), IntelliJ IDEA Ult(backend)
 
 ## Development Process
 
-#### Initialise project
+### Initialise project
 Ant Design Pro, Ant Design framework to initialize front end
 IDEA Spring Initializr to initialize backend
