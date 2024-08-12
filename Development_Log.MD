@@ -58,7 +58,7 @@ isDelete whether to delete 0 1 (logical deletion) tinyint
 
 userRole user role 0 - ordinary user 1 - administrator
 
-### Automatic Generator - MyBatisX (User class, UserMapper.xml)
+### Automatic Generator - MyBatisX ([User.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fmodel%2Fdomain%2FUser.java), [UserMapper.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fmapper%2FUserMapper.java))
 MyBatisX plug-in, automatically generates according to the database:
 domain: entity object
 mapper: object for operating the database
@@ -67,7 +67,7 @@ service: contains commonly used additions, deletions, modifications and queries
 serviceImpl: specific implementation of the service
 thereby improving development efficiency
 
-### Registration Logic Design ([UserService.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fservice%2FUserService.java)[UserService.java], [UserServiceImpl.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fservice%2Fimpl%2FUserServiceImpl.java))
+### Registration Logic Design ([UserService.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fservice%2FUserService.java), [UserServiceImpl.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fservice%2Fimpl%2FUserServiceImpl.java))
 1. The user enters the account and password, as well as the verification code (todo) on the front end
 2. Verify the user's account, password, and verification password to see if they meet the requirements
    i. Not empty
