@@ -67,7 +67,7 @@ service: contains commonly used additions, deletions, modifications and queries
 serviceImpl: specific implementation of the service
 thereby improving development efficiency
 
-### Registration Logic Design ([UserService.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fservice%2FUserService.java), [UserServiceImpl.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fservice%2Fimpl%2FUserServiceImpl#92.java))
+### Registration Logic Design ([UserService.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fservice%2FUserService.java), [UserServiceImpl.java](https://github.com/MaxwellJia/user-center/blob/78f35aeffe78d4d1998c7102d0637be9360b0ce5/src/main/java/com/wangtao/usercenter/service/impl/UserServiceImpl.java#L92))
 1. The user enters the account and password, as well as the verification code (todo) on the front end
 2. Verify the user's account, password, and verification password to see if they meet the requirements
    i. Not empty
