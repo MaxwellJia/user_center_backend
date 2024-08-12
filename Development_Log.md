@@ -12,17 +12,17 @@ Backend: Basic database server(Mysql) -> Database controller(Mybatis, Mybatis-pl
 
 Back-end:
 
-java
-spring (dependency injection framework, helps you manage Java objects and integrate some other content)
-springmvc (web framework, provides interface access, restful interface and other capabilities)
-mybatis (Java database operation framework, persistence layer framework, jdbc encapsulation)
-mybatis-plus (enhancement of mybatis, can achieve addition, deletion, modification and query without writing sql)
-springboot (quick start/quick integration project. No need to manage spring configuration by yourself, no need to integrate various frameworks by yourself)
-junit unit test library
-mysql database
+1. spring (dependency injection framework, helps you manage Java objects and integrate some other content)
+2. springmvc (web framework, provides interface access, restful interface and other capabilities)
+3. mybatis (Java database operation framework, persistence layer framework, jdbc encapsulation)
+4. mybatis-plus (enhancement of mybatis, can achieve addition, deletion, modification and query without writing sql)
+5. springboot (quick start/quick integration project. No need to manage spring configuration by yourself, no need to integrate various frameworks by yourself)
+6. junit unit test library
+7. mysql database
+8. java (language)
 
 ## Development Tools
-WebStorm (front end), IntelliJ IDEA Ult(backend), MySQL and so on
+WebStorm (front end), IntelliJ IDEA Ult (backend), MySQL and so on
 
 ## Common Plugins
 MyBatisX, GenerateAllSetter, Auto Filling Java Call Arguments, 
