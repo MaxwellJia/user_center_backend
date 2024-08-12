@@ -1,6 +1,8 @@
 # Development Log
 
 ## Project Goals
+Achieve a web user-center including functions:
+
 1. User register and login
 2. User Management, search and modify users information
 3. User Verification
