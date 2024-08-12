@@ -6,11 +6,12 @@
 3. User Verification
 
 ## Project Logic
-Backend: Basic database server(Mysql) -> Database controller(Mybatis, Mybatis-plus) -> service and service implement -> controller -> Continuous optimization and updates
+Backend: 
+Basic database server(Mysql) -> Database controller(Mybatis, Mybatis-plus) -> service and service implement -> controller -> Continuous optimization and updates
 
 ## Technology Selection
 
-Back-end:
+Backend:
 
 1. spring (dependency injection framework, helps you manage Java objects and integrate some other content)
 2. springmvc (web framework, provides interface access, restful interface and other capabilities)
@@ -31,8 +32,8 @@ MyBatisX, GenerateAllSetter, Auto Filling Java Call Arguments,
 ## Development Process
 
 ### Initialise Project
-Ant Design Pro, Ant Design framework to initialize front end
-IDEA Spring Initializr to initialize backend (Generate basic frameworks and dependencies), configure the database, initialise myBaits-plus to modify database later (dependencies and framework)
+1. Ant Design Pro, Ant Design framework to initialize front end
+2. IDEA Spring Initializr to initialize backend (Generate basic frameworks and dependencies), configure the database, initialise myBaits-plus to modify database later (dependencies and framework)
 
 ### Database Design (Mysql Database user)
 id (primary key) bigint
@@ -63,22 +64,34 @@ userRole user role 0 - ordinary user 1 - administrator
 
 ### Automatic Generator - MyBatisX ([User.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fmodel%2Fdomain%2FUser.java), [UserMapper.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fmapper%2FUserMapper.java))
 MyBatisX plug-in, automatically generates according to the database:
+
 domain: entity object
+
 mapper: object for operating the database
+
 mapper.xml: defines the association between the mapper object and the database, where you can write SQL yourself
+
 service: contains commonly used additions, deletions, modifications and queries
+
 serviceImpl: specific implementation of the service
+
 thereby improving development efficiency
 
 ### Registration Logic Design ([UserService.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fservice%2FUserService.java), [UserServiceImpl.java](https://github.com/MaxwellJia/user-center/blob/78f35aeffe78d4d1998c7102d0637be9360b0ce5/src/main/java/com/wangtao/usercenter/service/impl/UserServiceImpl.java#L92))
 1. The user enters the account and password, as well as the verification code (todo) on the front end
 2. Verify the user's account, password, and verification password to see if they meet the requirements
    i. Not empty
+
    ii. The account length is not less than 4 characters
+
    iii. The password should be not less than 8 characters
+
    iv. The account cannot be repeated
+
    v. The account does not contain special characters
+
    vi. The password and verification password are the same
+
 3. Encrypt the password (the password must not be stored directly in the database in plain text)
 4. Insert user data into the database
 
@@ -121,12 +134,14 @@ Controller annotation:
 Where should the validation be written?
 
 The controller layer tends to validate the request parameters themselves, and does not involve the business logic itself (the less the better)
+
 The service layer validates the business logic (it may be called by classes other than the controller)
 
 ### User Management
 
 #### Main Functions
 Identify user role or authority (Not anyone is able to search users or delete users)
+
 1. Search users
 2. Delete users
 
