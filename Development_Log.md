@@ -8,7 +8,8 @@ Achieve a web user-center including functions:
 3. User Verification
 
 ## Project Logic
-Backend: 
+Backend:
+
 Basic database server(Mysql) -> Database controller(Mybatis, Mybatis-plus) -> service and service implement -> controller -> Continuous optimization and updates
 
 ## Technology Selection
@@ -121,7 +122,7 @@ Return value: user information (masked)
 #### Implement ####
 Controller encapsulates requests
 
-Some request entities are generated used to be the input request for methods in controller (such as: [UserLoginRequest.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fmodel%2Fdomain%2Frequest%2FUserLoginRequest.java),[UserRegisterRequest.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fmodel%2Fdomain%2Frequest%2FUserRegisterRequest.java))
+Some request entities are generated used to be the input request for methods in controller (such as: [UserLoginRequest.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fmodel%2Fdomain%2Frequest%2FUserLoginRequest.java), [UserRegisterRequest.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fmodel%2Fdomain%2Frequest%2FUserRegisterRequest.java))
 
 Some mappings are created to help users visit certain methods, such as: @RestController, @RequestMapping
 
@@ -139,12 +140,12 @@ The controller layer tends to validate the request parameters themselves, and do
 
 The service layer validates the business logic (it may be called by classes other than the controller)
 
-### User Management
+### User Management [UserController.java](src%2Fmain%2Fjava%2Fcom%2Fwangtao%2Fusercenter%2Fcontroller%2FUserController.java)
 
-#### Main Functions
+#### Main Functions (Utilise Mybatis-plus inner methods and achieve them in controller level directly)
 Identify user role or authority (Not anyone is able to search users or delete users)
 
-1. Search users
+1. Search users 
 2. Delete users
 
 
