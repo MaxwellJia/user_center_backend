@@ -3,3 +3,5 @@
 
 ## Project Introduction
 This project is the most common user management system, which implements basic functions such as user registration, login, and query.
+
+Please check the Development Log for more development details.
