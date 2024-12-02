@@ -20,9 +20,10 @@ public interface UserService extends IService<User> {
      * @param userAccount   user's account
      * @param userPassword  user's Password
      * @param checkPassword user's check password
+     * @param securityCode user's securityCode
      * @return -1 if invalid for any one of three above, user Id otherwise.
      */
-    long userRegister(String userAccount, String userPassword, String checkPassword);
+    long userRegister(String userAccount, String userPassword, String checkPassword, String securityCode);
 
 
     /**
@@ -41,4 +42,12 @@ public interface UserService extends IService<User> {
      * @return safty user
      */
     User getSaftyUser(User originalUser);
+
+    /**
+     * Request user logout
+     * @param request
+     * @return
+     */
+    Integer userLogout(HttpServletRequest request);
+
 }

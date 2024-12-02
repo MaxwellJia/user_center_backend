@@ -1,6 +1,10 @@
 package com.wangtao.usercenter.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wangtao.usercenter.common.BaseResponse;
+import com.wangtao.usercenter.common.ErrorCode;
+import com.wangtao.usercenter.common.ResultUtils;
+import com.wangtao.usercenter.exception.BusinessException;
 import com.wangtao.usercenter.model.domain.User;
 import com.wangtao.usercenter.model.domain.request.UserLoginRequest;
 import com.wangtao.usercenter.model.domain.request.UserRegisterRequest;
@@ -8,10 +12,16 @@ import com.wangtao.usercenter.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.wangtao.usercenter.constant.UserConstant.ADMIN_ROLE;
@@ -37,19 +47,20 @@ public class UserController {
      */
     @PostMapping("/register") // Create a address or path after /user, user can access this address to register
     //@RequestBody is to reflect parameter coming in to a class
-    public Long userRegister(@RequestBody UserRegisterRequest userRegisterRequest){
+    public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest){
         if (userRegisterRequest == null){
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "request is null");
         }
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
+        String securityCode = userRegisterRequest.getSecurityCode();
         // Check any blank for parameters
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)){
-            return null;
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, securityCode)){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "user account or password or check password error");
         }
-        long id = userService.userRegister(userAccount, userPassword, checkPassword);
-        return id;
+        long result = userService.userRegister(userAccount, userPassword, checkPassword, securityCode);
+        return ResultUtils.success(result);
     }
 
 
@@ -60,42 +71,133 @@ public class UserController {
      * @return User object
      */
     @PostMapping("/login")// Create a address or path after /user, user can access this address to log in
-    public User userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request){
+    public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request){
         if (userLoginRequest == null){
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "request is null");
         }
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
         // Check any blank for parameters
         if (StringUtils.isAnyBlank(userAccount, userPassword)){
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "user account or password is null");
         }
-        return userService.userLogin(userAccount, userPassword, request);
+        User user = userService.userLogin(userAccount, userPassword, request);
+        return ResultUtils.success(user);
     }
 
 
     /**
+     * User Log out Controller
+     * @param request
+     * @return User object
+     */
+    @PostMapping("/logout")// Create a address or path after /user, user can access this address to log out
+    public BaseResponse<Integer> userLogout(HttpServletRequest request){
+        if (request == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "request is null");
+        }
+        Integer result = userService.userLogout(request);
+        return ResultUtils.success(result);
+    }
+
+    @GetMapping("/current")
+    public BaseResponse<User> getCurrentUser(HttpServletRequest request){
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
+        if (currentUser == null){
+            throw new BusinessException(ErrorCode.NOT_LOGIN, "current user is null");
+        }
+        long userId = currentUser.getId();
+        // todo 校验用户是否合法
+        User user = userService.getById(userId);
+        User saftyUser = userService.getSaftyUser(user);
+        return ResultUtils.success(saftyUser);
+    }
+
+    /**
      * Fuzzy User Search (Administrator only)
-     * @param username
+     * @param params
      * @return list of users
      */
     @GetMapping("/search")
-    public List<User> searchUsers(String username, HttpServletRequest request){
-        if (!isAdmin(request)){
-            return new ArrayList<>();
+    public BaseResponse<List<User>> searchUsers(@RequestParam Map<String, String> params, HttpServletRequest request) {
+        // 权限校验
+        if (!isAdmin(request)) {
+            throw new BusinessException(ErrorCode.NO_AUTH, "User is not admin");
         }
 
+        // 构建查询条件
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(username)){
-            queryWrapper.like("username", username); //Fuzzy query
-        }
+        params.forEach((key, value) -> {
+            if (value != null && !value.trim().isEmpty()) {
+                switch (key) {
+                    case "username":
+                    case "userAccount":
+                    case "avatarUrl":
+                    case "phone":
+                    case "email":
+                    case "securityCode":
+                        queryWrapper.like(true, key, value);
+                        break;
+                    case "gender":
+                    case "userStatus":
+                    case "userRole":
+                        queryWrapper.eq(parseInteger(value) != null, key, parseInteger(value));
+                        break;
+                    case "createTime":
+                        queryWrapper.apply("Date(" + key + ") LIKE '" + value + "%'");
+                        System.out.println("Date(" + key + ") LIKE '" + value + "%'");
+                        break;
+                    default:
+                        // Ignore unrecognized parameters
+                }
+            }
+        });
+
+        // 执行查询并处理返回结果
         List<User> userList = userService.list(queryWrapper);
+        List<User> result = userList.stream()
+                .map(userService::getSaftyUser)
+                .collect(Collectors.toList());
+
+        return ResultUtils.success(result);
+    }
+
+    // 安全解析 Integer
+    private Integer parseInteger(String value) {
+        try {
+            return value != null ? Integer.parseInt(value.trim()) : null;
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid integer value: " + value);
+            return null;
+        }
+    }
 
 
-        return userList.stream().map(user -> {
-            user.setUserPassword(null);
-            return userService.getSaftyUser(user);
-        }).collect(Collectors.toList());
+    /**
+     * Update Users (Administrator only)
+     * @return list of users
+     */
+    @PostMapping("/update")
+    public BaseResponse<User> update(@RequestBody User user, HttpServletRequest request){
+        if (!isAdmin(request)){
+            throw new BusinessException(ErrorCode.NO_AUTH, "User is not admin");
+        }
+
+        updateUsersByList(user);
+
+        return ResultUtils.success(user);
+    }
+
+    @Transactional
+    public void updateUsersByList(User user) {
+        if (user == null || user.getId() == null) {
+            throw new BusinessException(ErrorCode.PARAMS_NULL_ERROR, "Invalid user or user id");
+        }
+        boolean success = userService.updateById(user);
+        if (!success) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "Failed to update user: " + user.getId());
+        }
     }
 
 
@@ -104,15 +206,17 @@ public class UserController {
      * @param request
      * @return
      */
-    @GetMapping("/delete")
-    public boolean deleteUsers(@RequestParam long id, HttpServletRequest request){
+    @PostMapping("/delete")
+    public BaseResponse<Boolean> deleteUsers(@RequestParam long id, HttpServletRequest request){
         if (!isAdmin(request)){
-            return false;
+            throw new BusinessException(ErrorCode.NO_AUTH, "User is not admin");
         }
         if (id <= 0){
-            return false;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "User's id can't be less than 0");
         }
-        return userService.removeById(id);
+        boolean result = userService.removeById(id);
+
+        return ResultUtils.success(result);
     }
 
     /**
@@ -127,7 +231,4 @@ public class UserController {
         // Check if session is null or user is an administrator
         return user != null && user.getUserRole() == ADMIN_ROLE;
     }
-
-
-
 }

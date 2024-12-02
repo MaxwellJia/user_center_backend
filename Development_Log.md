@@ -31,7 +31,6 @@ WebStorm (front end), IntelliJ IDEA Ult (backend), MySQL and so on
 ## Common Plugins
 MyBatisX, GenerateAllSetter, Auto Filling Java Call Arguments, 
 
-
 ## Initialise Project
 1. Ant Design Pro, Ant Design framework to initialize front end
 2. IDEA Spring Initializr to initialize backend (Generate basic frameworks and dependencies), configure the database, initialise myBaits-plus to modify database later (dependencies and framework)
@@ -146,5 +145,15 @@ Identify user role or authority (Not anyone is able to search users or delete us
 1. Search users 
 2. Delete users
 
+## Front-end and back-end interaction
+The front end interacts with the back end through ajax, axios encapsulates ajax and request is a repackage of the ant design project.
 
+## Proxy
+Forward proxy: Sends requests to the server on behalf of the client, which can solve cross-domain problems
+
+Reverse proxy: receives requests on behalf of the server.
+
+How to implement proxy?
+
+Nginx server and Node.js server
 

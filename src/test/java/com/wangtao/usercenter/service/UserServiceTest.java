@@ -54,41 +54,42 @@ class UserServiceTest {
         String userAccount = "wangtao";
         String userPassword = "";
         String checkPassword = "12345678";
-        long result = userService.userRegister(userAccount, userPassword, checkPassword);
+        String securityCode = "1";
+        long result = userService.userRegister(userAccount, userPassword, checkPassword,securityCode);
         Assert.assertEquals(-1, result);
 
         // User account is less than 4
         userPassword = "12345678";
         userAccount = "wa";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,securityCode);
         Assert.assertEquals(-1, result);
 
         // Password is less than 8
         userAccount = "wangtao";
         userPassword = "123456";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,securityCode);
         Assert.assertEquals(-1, result);
 
         // No special symbols
         userPassword = "12345678";
         userAccount = "wang tao";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,securityCode);
         Assert.assertEquals(-1, result);
 
         // Check-password is the same as the password
         userAccount = "wangtao";
         checkPassword = "123456789";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,securityCode);
         Assert.assertEquals(-1, result);
 
         // No repeated account
         checkPassword = "12345678";
         userAccount = "123";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,securityCode);
         Assert.assertEquals(-1, result);
 
         userAccount = "wangtao";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,securityCode);
         Assert.assertTrue(result > 0);
     }
 }

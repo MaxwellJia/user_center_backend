@@ -2,6 +2,8 @@ package com.wangtao.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wangtao.usercenter.common.ErrorCode;
+import com.wangtao.usercenter.exception.BusinessException;
 import com.wangtao.usercenter.model.domain.User;
 import com.wangtao.usercenter.service.UserService;
 import com.wangtao.usercenter.mapper.UserMapper;
@@ -38,30 +40,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
 
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword) {
+    public long userRegister(String userAccount, String userPassword, String checkPassword, String securityCode) {
         /* return negative number means invalid **/
         // todo negative number need to be modified to error
         // 1. check
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            return -1;
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, securityCode)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "parameter is empty");
         }
         if (userAccount.length() < 4){
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "user account length is less than 4");
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8){
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "User password length is less than 8");
+        }
+        if (securityCode.length() > 5){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "security code length is greater than 5");
         }
 
         //There is no special symbols for user account
         String validPattern = "[ !@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]+";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
         if (matcher.find()){
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "there are special characters in user account");
         }
 
         // Check-password is the same with password
         if (!checkPassword.equals(userPassword)){
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "password is not the same as the check password");
         }
 
         // No repeated account
@@ -69,7 +74,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
         if (count > 0){
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "account is repeated");
+        }
+
+        // No repeated securityCode
+        queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("securityCode", securityCode);
+        count = userMapper.selectCount(queryWrapper);
+        if (count > 0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "security code is repeated");
         }
 
         // 2. encryption
@@ -79,10 +92,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
+        user.setSecurityCode(securityCode);
         boolean saveResult = this.save(user);
 
         if (!saveResult){
-            return -1;
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "user can't be saved");
         }
 
         return user.getId();
@@ -93,13 +107,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         /* return null means invalid **/
         // 1. check
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "user account or password is empty");
         }
         if (userAccount.length() < 4){
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "user account length is less than 4");
         }
         if (userPassword.length() < 8){
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "user password length is less than 8");
         }
 
         //There is no special symbols for user account
@@ -121,7 +135,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // user information doesn't exist in our database
         if (user == null){
             log.info("user login failed, userAccount cannot match password");
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_NULL_ERROR, "user does not exist");
         }// if there is a user login too many times, do something here
 
         // 3.User desensitisation
@@ -141,6 +155,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public User getSaftyUser(User originalUser){
+        if (originalUser == null){
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "there is no original user in getSaftyUser");
+        }
         User safeUser = new User();
         safeUser.setId(originalUser.getId());
         safeUser.setUsername(originalUser.getUsername());
@@ -152,7 +169,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safeUser.setUserRole(originalUser.getUserRole());
         safeUser.setUserStatus(originalUser.getUserStatus());
         safeUser.setCreateTime(originalUser.getCreateTime());
+        safeUser.setSecurityCode(originalUser.getSecurityCode());
         return safeUser;
+    }
+
+    /**
+     * Request user logout
+     * @param request
+     * @return
+     */
+    @Override
+    public Integer userLogout(HttpServletRequest request) {
+        // Remove user login status
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        return 1;
     }
 }
 
