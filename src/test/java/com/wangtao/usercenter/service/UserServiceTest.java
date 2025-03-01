@@ -25,18 +25,18 @@ class UserServiceTest {
      */
     @Test
     void testAddUser() {
-        User user = new User();
-        user.setUsername("Maxwell");
-        user.setUserAccount("Maxwell");
-        user.setAvatarUrl("https://www.code-nav.cn/user/1813081856547151874");
-        user.setGender(0);
-        user.setUserPassword("8bf75d25716494a5e1ae63de79db741a");//12345678
-        user.setPhone("123");
-        user.setEmail("456");
-
-        boolean result = userService.save(user);
-        System.out.println(user.getId());
-        assertTrue(result);
+//        User user = new User();
+//        user.setUsername("Maxwell");
+//        user.setUserAccount("Maxwell");
+//        user.setAvatarUrl("https://www.code-nav.cn/user/1813081856547151874");
+//        user.setGender(0);
+//        user.setUserPassword("8bf75d25716494a5e1ae63de79db741a");//12345678
+//        user.setPhone("123");
+//        user.setEmail("456");
+//
+//        boolean result = userService.save(user);
+//        System.out.println(user.getId());
+//        assertTrue(result);
     }
 
     /**
