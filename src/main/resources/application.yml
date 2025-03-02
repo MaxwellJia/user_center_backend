@@ -4,14 +4,16 @@ spring:
     name: user-center
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
-    url: jdbc:mysql://localhost:3306/user
+    username: UserCenter
+    password: pw123456@
+    url: jdbc:mysql://usercenterdb.mysql.database.azure.com:3306/user?useSSL=true
+
+
   # Session timeout time
   session:
     timeout: 86400
 server:
-  port: 8080
+  port: 3306
   servlet:
     context-path: /api
 
