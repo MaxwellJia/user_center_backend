@@ -15,6 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -101,16 +106,40 @@ public class UserController {
     }
 
     @GetMapping("/current")
-    public BaseResponse<User> getCurrentUser(HttpServletRequest request){
+//    public BaseResponse<User> getCurrentUser(HttpServletRequest request){
+//        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+//        User currentUser = (User) userObj;
+//        if (currentUser == null){
+//            throw new BusinessException(ErrorCode.NOT_LOGIN, "current user is null");
+//        }
+//        long userId = currentUser.getId();
+//        // todo 校验用户是否合法
+//        User user = userService.getById(userId);
+//        User saftyUser = userService.getSaftyUser(user);
+//
+//        return ResultUtils.success(saftyUser);
+//    }
+
+    public BaseResponse<User> getCurrentUser(HttpServletRequest request, HttpServletResponse response) {
+        // 获取用户信息
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
-        if (currentUser == null){
+
+        if (currentUser == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN, "current user is null");
         }
+
+        // 获取用户详细信息
         long userId = currentUser.getId();
         // todo 校验用户是否合法
         User user = userService.getById(userId);
         User saftyUser = userService.getSaftyUser(user);
+
+        // 设置 cookie 的 SameSite 和 Secure 属性
+        String sessionId = request.getSession().getId();
+        String cookie = "JSESSIONID=" + sessionId + "; Path=/; HttpOnly; Secure; SameSite=None";  // 设置 SameSite 属性
+        response.setHeader("Set-Cookie", cookie);  // 使用响应头设置 Cookie
+
         return ResultUtils.success(saftyUser);
     }
 

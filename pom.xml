@@ -85,6 +85,15 @@
             <version>3.5.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version> <!-- 使用合适的版本 -->
+            <scope>provided</scope>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>
