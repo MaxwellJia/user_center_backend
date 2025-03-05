@@ -9,7 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8000","http://localhost:8000/user/login", "http://icy-tree-0067c3610.6.azurestaticapps.net", "http://icy-tree-0067c3610.6.azurestaticapps.net/user/login") // 允许的前端地址
+                .allowedOrigins("https://icy-tree-0067c3610.6.azurestaticapps.net") // 允许的前端地址
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // 允许的请求方式
                 .allowedHeaders("*") // 允许的请求头
                 .allowCredentials(true); // 是否允许携带身份认证信息（如 cookie）
