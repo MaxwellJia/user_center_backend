@@ -39,6 +39,7 @@ import static com.wangtao.usercenter.constant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController // This class is to process requests from HTTP
 @RequestMapping("/user") // Create a first-class address
+@CrossOrigin(origins = "https://icy-tree-0067c3610.6.azurestaticapps.net/", allowCredentials = "true")
 public class UserController {
     @Resource // Inject userService
     private UserService userService;
