@@ -93,7 +93,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
         user.setSecurityCode(securityCode);
-        user.setIsDelete(1);
+        user.setIsDelete(0);
         boolean saveResult = this.save(user);
 
         if (!saveResult){
