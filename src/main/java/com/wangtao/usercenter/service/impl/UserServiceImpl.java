@@ -78,12 +78,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         // No repeated securityCode
-        queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("securityCode", securityCode);
-        count = userMapper.selectCount(queryWrapper);
-        if (count > 0){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "security code is repeated");
-        }
+//        queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("securityCode", securityCode);
+//        count = userMapper.selectCount(queryWrapper);
+//        if (count > 0){
+//            throw new BusinessException(ErrorCode.PARAMS_ERROR, "security code is repeated");
+//        }
 
         // 2. encryption
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
