@@ -3,10 +3,19 @@ spring:
   application:
     name: user-center
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: UserCenter
-    password: pw123456@
-    url: jdbc:mysql://usercenterdb.mysql.database.azure.com:3306/user?useSSL=true
+      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+      username: wangtao@javaprojectsql
+      password: pw12345678@
+      url: jdbc:sqlserver://javaprojectsql.database.windows.net:1433;databaseName=JavaProjectSQL;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+      #jdbc:sqlserver://javaprojectsql.database.windows.net:1433;database=JavaProjectSQL;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: UserCenter
+#    password: pw123456@
+#    url: jdbc:mysql://usercenterdb.mysql.database.azure.com:3306/user?useSSL=true
 
 #    username: root
 #    password: 123456
